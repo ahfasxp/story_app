@@ -1,9 +1,11 @@
-class StoryResponse {
+import 'package:equatable/equatable.dart';
+
+class StoryResponse extends Equatable {
   final bool? error;
   final String? message;
   final Story? story;
 
-  StoryResponse({this.error, this.message, this.story});
+  const StoryResponse({this.error, this.message, this.story});
 
   factory StoryResponse.fromJson(Map<String, dynamic> json) {
     return StoryResponse(
@@ -12,9 +14,12 @@ class StoryResponse {
       story: json['story'] != null ? Story.fromJson(json['story']) : null,
     );
   }
+
+  @override
+  List<Object?> get props => [error, message, story];
 }
 
-class Story {
+class Story extends Equatable {
   final String? id;
   final String? name;
   final String? description;
@@ -23,7 +28,7 @@ class Story {
   final double? lat;
   final double? lon;
 
-  Story({
+  const Story({
     this.id,
     this.name,
     this.description,
@@ -45,4 +50,8 @@ class Story {
       lon: json['lon'] != null ? double.parse(json['lon'].toString()) : null,
     );
   }
+
+  @override
+  List<Object?> get props =>
+      [id, name, description, photoUrl, createdAt, lat, lon];
 }
