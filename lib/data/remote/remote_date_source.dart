@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:story_app/data/remote/response/base_response.dart';
 import 'package:story_app/data/remote/response/list_story_response.dart';
@@ -11,18 +12,22 @@ import 'package:story_app/utils/exception.dart';
 abstract class RemoteDataSource {
   Future<BaseResponse> register(String name, String email, String password);
   Future<LoginResult> loginUser(String email, String password);
-  Future<BaseResponse> addNewStory(String name, String description,
-      String photoPath, double lat, double lon);
+  Future<BaseResponse> addNewStory(
+    String name,
+    String description,
+    File photo,
+    double lat,
+    double lon,
+  );
   Future<List<Story>> getStories();
   Future<Story> getStory(String id);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
+  final GetStorage _getStorage = GetStorage();
+  final http.Client client = http.Client();
+
   static const baseUrl = 'https://story-api.dicoding.dev/v1';
-
-  final http.Client client;
-
-  RemoteDataSourceImpl({required this.client});
 
   @override
   Future<BaseResponse> register(
@@ -45,8 +50,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<LoginResult> loginUser(String email, String password) async {
+    final token = _getStorage.read('token');
     final response = await client.post(
       Uri.parse('$baseUrl/login'),
+      headers: {'Authorization': 'Bearer $token'},
       body: {
         'email': email,
         'password': password,
@@ -62,24 +69,25 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<BaseResponse> addNewStory(String name, String description,
-      String photoPath, double lat, double lon) async {
-    final fileBytes = await File(photoPath).readAsBytes();
-    final file =
-        http.MultipartFile.fromBytes('file', fileBytes, filename: 'file.txt');
+  Future<BaseResponse> addNewStory(String name, String description, File photo,
+      double lat, double lon) async {
+    final token = _getStorage.read('token');
+    final fileBytes = await photo.readAsBytes();
+    final file = http.MultipartFile.fromBytes('file', fileBytes);
 
     final response = await client.post(
       Uri.parse('$baseUrl/stories'),
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer $token',
       },
-      body: json.encode({
+      body: {
         'name': name,
         'description': description,
         'photo': file,
         'lat': lat,
         'lon': lon,
-      }),
+      },
     );
 
     if (response.statusCode == 200) {
@@ -91,8 +99,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<List<Story>> getStories() async {
+    final token = _getStorage.read('token');
     final response = await client.get(
       Uri.parse('$baseUrl/listStory'),
+      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
@@ -104,8 +114,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<Story> getStory(String id) async {
+    final token = _getStorage.read('token');
     final response = await client.get(
       Uri.parse('$baseUrl/story/$id'),
+      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
