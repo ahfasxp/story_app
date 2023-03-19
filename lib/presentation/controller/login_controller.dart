@@ -15,7 +15,7 @@ class LoginController extends GetxController {
     try {
       isLoading.value = true;
       update();
-      final result = await _remoteDataSource.loginUser(email, password);
+      final result = await _remoteDataSource.login(email, password);
       loginResult.value = result;
       hasData.value = true;
       update();

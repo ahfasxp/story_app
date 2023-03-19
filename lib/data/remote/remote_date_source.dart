@@ -7,7 +7,6 @@ import 'package:story_app/data/remote/response/base_response.dart';
 import 'package:story_app/data/remote/response/list_story_response.dart';
 import 'package:story_app/data/remote/response/login_response.dart';
 import 'package:story_app/data/remote/response/login_result.dart';
-import 'package:story_app/data/remote/response/story_response.dart';
 import 'package:story_app/data/remote/response/story_result.dart';
 
 class RemoteDataSource {
@@ -39,7 +38,7 @@ class RemoteDataSource {
     }
   }
 
-  Future<LoginResult> loginUser(String email, String password) async {
+  Future<LoginResult> login(String email, String password) async {
     final response = await client.post(
       Uri.parse('$baseUrl/login'),
       body: {
@@ -107,24 +106,6 @@ class RemoteDataSource {
     switch (response.statusCode) {
       case 200:
         return ListStoryResponse.fromJson(jsonDecode(response.body)).listStory!;
-      case 400:
-      case 404:
-      case 500:
-        return Future.error(jsonDecode(response.body)['message']);
-      default:
-        return Future.error('Tidak ada koneksi internet');
-    }
-  }
-
-  Future<StoryResult> getStory(String id) async {
-    final token = _getStorage.read('token');
-    final response = await client.get(
-      Uri.parse('$baseUrl/stories/$id'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-    switch (response.statusCode) {
-      case 200:
-        return StoryResponse.fromJson(jsonDecode(response.body)).story!;
       case 400:
       case 404:
       case 500:
