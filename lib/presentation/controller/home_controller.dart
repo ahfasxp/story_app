@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -28,33 +26,6 @@ class HomeController extends GetxController {
       update();
       final result = await _remoteDataSource.getStories();
       stories.value = result;
-      hasData.value = true;
-      update();
-    } catch (e) {
-      errorMessage.value = e.toString();
-      isError.value = true;
-      update();
-    } finally {
-      isLoading.value = false;
-      update();
-    }
-  }
-
-  Future<void> addStory(
-    String description,
-    File photo,
-    double? lat,
-    double? long,
-  ) async {
-    try {
-      isLoading.value = true;
-      update();
-      await _remoteDataSource.addNewStory(
-        description,
-        photo,
-        lat,
-        long,
-      );
       hasData.value = true;
       update();
     } catch (e) {

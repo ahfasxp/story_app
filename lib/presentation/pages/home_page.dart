@@ -52,11 +52,10 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const DetailStoryPage(
-                          name: 'User',
-                          imageUrl:
-                              'https://randomuser.me/api/portraits/men/1.jpg',
-                          description: 'Lorem ipsum dolor sit amet',
+                        builder: (context) => DetailStoryPage(
+                          name: dx.stories[index].name ?? '',
+                          imageUrl: dx.stories[index].photoUrl ?? '',
+                          description: dx.stories[index].description ?? '',
                         ),
                       ),
                     );

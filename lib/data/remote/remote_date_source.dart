@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:story_app/data/remote/response/base_response.dart';
@@ -64,45 +63,44 @@ class RemoteDataSource {
   Future<BaseResponse> addNewStory(
     String description,
     File photo,
-    double? lat,
-    double? long,
   ) async {
     final token = _getStorage.read('token');
-    final fileBytes = await photo.readAsBytes();
-    final file = http.MultipartFile.fromBytes('file', fileBytes);
-
-    final response = await client.post(
+    final request = http.MultipartRequest(
+      'POST',
       Uri.parse('$baseUrl/stories'),
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Bearer $token',
-      },
-      body: {
-        'description': description,
-        'photo': file,
-        'lat': lat,
-        'lon': long,
-      },
+    );
+    request.headers.addAll({
+      'Authorization': 'Bearer $token',
+    });
+    request.fields.addAll({
+      'description': description,
+    });
+    request.files.add(
+      http.MultipartFile(
+        'photo',
+        photo.readAsBytes().asStream(),
+        photo.lengthSync(),
+        filename: photo.path.split('/').last,
+      ),
     );
 
-    debugPrint(response.body);
+    final response = await request.send();
 
-    switch (response.statusCode) {
-      case 200:
-        return BaseResponse.fromJson(jsonDecode(response.body));
-      case 400:
-      case 404:
-      case 500:
-        return Future.error(jsonDecode(response.body)['message']);
-      default:
-        return Future.error('Tidak ada koneksi internet');
+    if (response.statusCode <= 300) {
+      final responseString = await response.stream.bytesToString();
+      return BaseResponse.fromJson(jsonDecode(responseString));
+    } else if (response.statusCode <= 500) {
+      final errorString = await response.stream.bytesToString();
+      return Future.error(jsonDecode(errorString)['message']);
+    } else {
+      return Future.error('Tidak ada koneksi internet');
     }
   }
 
   Future<List<StoryResult>> getStories() async {
     final token = _getStorage.read('token');
     final response = await client.get(
-      Uri.parse('$baseUrl/listStory'),
+      Uri.parse('$baseUrl/stories'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
@@ -121,7 +119,7 @@ class RemoteDataSource {
   Future<StoryResult> getStory(String id) async {
     final token = _getStorage.read('token');
     final response = await client.get(
-      Uri.parse('$baseUrl/story/$id'),
+      Uri.parse('$baseUrl/stories/$id'),
       headers: {'Authorization': 'Bearer $token'},
     );
     switch (response.statusCode) {

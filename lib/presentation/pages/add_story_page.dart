@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:story_app/presentation/controller/home_controller.dart';
+import 'package:story_app/presentation/controller/add_story_controller.dart';
 
 class AddStoryPage extends StatefulWidget {
   const AddStoryPage({super.key});
@@ -13,7 +13,7 @@ class AddStoryPage extends StatefulWidget {
 }
 
 class _AddStoryPageState extends State<AddStoryPage> {
-  final HomeController _controller = Get.put(HomeController());
+  final AddStoryController _controller = Get.put(AddStoryController());
   final _picker = ImagePicker();
 
   final TextEditingController _descController = TextEditingController();
@@ -35,7 +35,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
       appBar: AppBar(
         title: const Text('Add Story'),
       ),
-      body: GetBuilder<HomeController>(
+      body: GetBuilder<AddStoryController>(
         builder: (dx) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -108,8 +108,6 @@ class _AddStoryPageState extends State<AddStoryPage> {
                       await dx.addStory(
                         desc,
                         _image!,
-                        0.1111,
-                        0.4324312,
                       );
                       if (dx.hasData.value) {
                         Get.back();
