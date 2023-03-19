@@ -13,7 +13,6 @@ class AddStoryPage extends StatefulWidget {
 }
 
 class _AddStoryPageState extends State<AddStoryPage> {
-  final AddStoryController _controller = Get.put(AddStoryController());
   final _picker = ImagePicker();
 
   final TextEditingController _descController = TextEditingController();
@@ -54,7 +53,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
                               leading: const Icon(Icons.camera),
                               title: const Text('Take a photo'),
                               onTap: () {
-                                Navigator.of(context).pop();
+                                Get.back();
                                 _pickImage(ImageSource.camera);
                               },
                             ),
@@ -62,7 +61,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
                               leading: const Icon(Icons.image),
                               title: const Text('Choose from gallery'),
                               onTap: () {
-                                Navigator.of(context).pop();
+                                Get.back();
                                 _pickImage(ImageSource.gallery);
                               },
                             ),

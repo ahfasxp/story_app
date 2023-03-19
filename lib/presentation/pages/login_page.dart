@@ -14,7 +14,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final LoginController _controller = Get.put(LoginController());
   final GetStorage _getStorage = GetStorage();
 
   final TextEditingController _emailController = TextEditingController();

@@ -13,8 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeController _controller = Get.put(HomeController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,16 +47,11 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailStoryPage(
+                    Get.to(() => DetailStoryPage(
                           name: dx.stories[index].name ?? '',
                           imageUrl: dx.stories[index].photoUrl ?? '',
                           description: dx.stories[index].description ?? '',
-                        ),
-                      ),
-                    );
+                        ));
                   },
                   child: Card(
                     child: Column(
@@ -91,12 +84,14 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddStoryPage()),
+      floatingActionButton: GetBuilder<HomeController>(
+        builder: (dx) {
+          return FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              await Get.to(() => const AddStoryPage());
+              dx.getStories();
+            },
           );
         },
       ),
