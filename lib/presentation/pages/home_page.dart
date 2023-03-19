@@ -46,12 +46,15 @@ class _HomePageState extends State<HomePage> {
               itemCount: dx.stories.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () {
-                    Get.to(() => DetailStoryPage(
-                          name: dx.stories[index].name ?? '',
-                          imageUrl: dx.stories[index].photoUrl ?? '',
-                          description: dx.stories[index].description ?? '',
-                        ));
+                  onTap: () async {
+                    await Get.to(
+                      () => DetailStoryPage(
+                        name: dx.stories[index].name ?? '',
+                        imageUrl: dx.stories[index].photoUrl ?? '',
+                        description: dx.stories[index].description ?? '',
+                      ),
+                    );
+                    dx.getStories();
                   },
                   child: Card(
                     child: Column(
