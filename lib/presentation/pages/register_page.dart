@@ -23,8 +23,8 @@ class _RegisterPageState extends State<RegisterPage> {
         title: const Text('Register'),
       ),
       body: GetBuilder<RegisterController>(
-        builder: (_) {
-          if (_controller.isLoading.value) {
+        builder: (dx) {
+          if (dx.isLoading.value) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -61,11 +61,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       String name = _nameController.text;
                       String email = _emailController.text;
                       String password = _passwordController.text;
-                      await _controller.register(name, email, password);
-                      if (_controller.hasData.value) {
+                      await dx.register(name, email, password);
+                      if (dx.hasData.value) {
                         Get.back();
                       } else {
-                        String errorMessage = _controller.errorMessage.value;
+                        String errorMessage = dx.errorMessage.value;
                         Get.snackbar(
                           'Terjadi Kesalahan',
                           errorMessage,
