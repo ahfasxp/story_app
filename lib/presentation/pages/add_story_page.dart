@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:story_app/presentation/controller/home_controller.dart';
 
 class AddStoryPage extends StatefulWidget {
   const AddStoryPage({super.key});
@@ -11,11 +13,12 @@ class AddStoryPage extends StatefulWidget {
 }
 
 class _AddStoryPageState extends State<AddStoryPage> {
-  final _formKey = GlobalKey<FormState>();
+  final HomeController _controller = Get.put(HomeController());
   final _picker = ImagePicker();
 
+  final TextEditingController _descController = TextEditingController();
+
   File? _image;
-  String? _description;
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedImage = await _picker.pickImage(source: source);
@@ -32,11 +35,10 @@ class _AddStoryPageState extends State<AddStoryPage> {
       appBar: AppBar(
         title: const Text('Add Story'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
+      body: GetBuilder<HomeController>(
+        builder: (dx) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -81,38 +83,51 @@ class _AddStoryPageState extends State<AddStoryPage> {
                   ),
                 ),
                 const SizedBox(height: 16.0),
-                TextFormField(
+                TextField(
+                  controller: _descController,
                   decoration: const InputDecoration(
                     labelText: 'Description',
                     border: OutlineInputBorder(),
                   ),
-                  maxLines: null,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter description';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _description = value;
-                    });
-                  },
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // simpan cerita ke database atau server
-                      Navigator.of(context).pop();
+                  onPressed: () async {
+                    String desc = _descController.text;
+                    if (_image == null) {
+                      Get.snackbar(
+                        'Terjadi Kesalahan',
+                        'Please select photo first',
+                      );
+                    } else if (desc == '') {
+                      Get.snackbar(
+                        'Terjadi Kesalahan',
+                        'Please input description first',
+                      );
+                    } else {
+                      await dx.addStory(
+                        desc,
+                        _image!,
+                        0.1111,
+                        0.4324312,
+                      );
+                      if (dx.hasData.value) {
+                        Get.back();
+                      } else {
+                        String errorMessage = dx.errorMessage.value;
+                        Get.snackbar(
+                          'Terjadi Kesalahan',
+                          errorMessage,
+                        );
+                      }
                     }
                   },
                   child: const Text('Save'),
                 ),
               ],
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
