@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:story_app/main_biding.dart';
+import 'package:story_app/presentation/pages/add_story_page.dart';
+import 'package:story_app/presentation/pages/detail_story_page.dart';
 import 'package:story_app/presentation/pages/home_page.dart';
 import 'package:story_app/presentation/pages/login_page.dart';
+import 'package:story_app/presentation/pages/register_page.dart';
 
 Future<void> main() async {
   await GetStorage.init();
@@ -24,9 +27,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       initialBinding: MainBinding(),
-      home: (_getStorage.read('token') != null)
-          ? const HomePage()
-          : const LoginPage(),
+      getPages: [
+        GetPage(name: '/', page: () => const HomePage()),
+        GetPage(name: '/login', page: () => const LoginPage()),
+        GetPage(name: '/register', page: () => const RegisterPage()),
+        GetPage(name: '/detail-story', page: () => const DetailStoryPage()),
+        GetPage(name: '/add-story', page: () => const AddStoryPage()),
+      ],
+      initialRoute: (_getStorage.read('token') != null) ? '/' : '/login',
     );
   }
 }

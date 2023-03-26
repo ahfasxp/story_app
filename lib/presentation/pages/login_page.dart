@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:story_app/data/remote/response/login_result.dart';
 import 'package:story_app/presentation/controller/login_controller.dart';
-import 'package:story_app/presentation/pages/home_page.dart';
-import 'package:story_app/presentation/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -60,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (dx.hasData.value) {
                         LoginResult loginResult = dx.loginResult.value;
                         _getStorage.write('token', loginResult.token);
-                        Get.off(() => const HomePage());
+                        Get.offNamed('/');
                       } else {
                         String errorMessage = dx.errorMessage.value;
                         Get.snackbar(
@@ -74,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 10.0),
                   TextButton(
                     onPressed: () {
-                      Get.to(() => const RegisterPage());
+                      Get.toNamed('/register');
                     },
                     child: const Text('Don\'t have an account? Register here'),
                   ),

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:story_app/presentation/controller/home_controller.dart';
-import 'package:story_app/presentation/pages/add_story_page.dart';
-import 'package:story_app/presentation/pages/detail_story_page.dart';
-import 'package:story_app/presentation/pages/login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +10,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final HomeController _homeController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    _homeController.getStories();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +29,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.exit_to_app),
               onPressed: () async {
                 if (await dx.logout()) {
-                  Get.off(() => const LoginPage());
+                  Get.offNamed('/login');
                 }
               },
             );
@@ -47,12 +52,11 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () async {
-                    await Get.to(
-                      () => DetailStoryPage(
-                        name: dx.stories[index].name ?? '',
-                        imageUrl: dx.stories[index].photoUrl ?? '',
-                        description: dx.stories[index].description ?? '',
-                      ),
+                    final name = dx.stories[index].name;
+                    final imageUrl = dx.stories[index].photoUrl;
+                    final desc = dx.stories[index].description;
+                    await Get.toNamed(
+                      '/detail-story?name=$name&imageUrl=$imageUrl&description=$desc',
                     );
                     dx.getStories();
                   },
@@ -92,7 +96,7 @@ class _HomePageState extends State<HomePage> {
           return FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () async {
-              await Get.to(() => const AddStoryPage());
+              await Get.toNamed('/add-story');
               dx.getStories();
             },
           );

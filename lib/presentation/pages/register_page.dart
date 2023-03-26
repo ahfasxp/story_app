@@ -61,6 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       String password = _passwordController.text;
                       await dx.register(name, email, password);
                       if (dx.hasData.value) {
+                        Get.snackbar('Register Successfully', '');
                         Get.back();
                       } else {
                         String errorMessage = dx.errorMessage.value;

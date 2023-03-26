@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DetailStoryPage extends StatelessWidget {
-  final String name;
-  final String imageUrl;
-  final String description;
-
-  const DetailStoryPage(
-      {super.key,
-      required this.name,
-      required this.imageUrl,
-      required this.description});
+  const DetailStoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final name = Get.parameters['name'];
+    final imageUrl = Get.parameters['imageUrl'];
+    final description = Get.parameters['description'];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Story Detail'),
@@ -25,7 +22,7 @@ class DetailStoryPage extends StatelessWidget {
             height: 200,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(imageUrl),
+                image: NetworkImage(imageUrl ?? ''),
                 fit: BoxFit.cover,
               ),
             ),
@@ -36,12 +33,12 @@ class DetailStoryPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
+                  name ?? 'user_name',
                   style: const TextStyle(
                       fontSize: 24.0, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16.0),
-                Text(description),
+                Text(description ?? ''),
               ],
             ),
           ),

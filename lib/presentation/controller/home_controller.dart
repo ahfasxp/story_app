@@ -8,12 +8,6 @@ class HomeController extends GetxController {
   final RemoteDataSource _remoteDataSource = RemoteDataSource();
   final GetStorage _getStorage = GetStorage();
 
-  @override
-  void onInit() {
-    super.onInit();
-    getStories();
-  }
-
   var isLoading = false.obs;
   var hasData = false.obs;
   var isError = false.obs;
