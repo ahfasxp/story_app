@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/presentation/controller/home_controller.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,11 +11,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeController _homeController = Get.find();
+  final HomeController _homeController = Get.put(HomeController());
 
   @override
   void initState() {
     super.initState();
+    _homeController.getStories();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _homeController.getStories();
   }
 
@@ -29,7 +36,8 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.exit_to_app),
               onPressed: () async {
                 if (await dx.logout()) {
-                  Get.offNamed('/login');
+                  // ignore: use_build_context_synchronously
+                  context.go('/login');
                 }
               },
             );
@@ -51,14 +59,8 @@ class _HomePageState extends State<HomePage> {
               itemCount: dx.stories.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () async {
-                    final name = dx.stories[index].name;
-                    final imageUrl = dx.stories[index].photoUrl;
-                    final desc = dx.stories[index].description;
-                    await Get.toNamed(
-                      '/detail-story?name=$name&imageUrl=$imageUrl&description=$desc',
-                    );
-                    dx.getStories();
+                  onTap: () {
+                    context.go('/detail-story', extra: dx.stories[index]);
                   },
                   child: Card(
                     child: Column(
@@ -95,9 +97,8 @@ class _HomePageState extends State<HomePage> {
         builder: (dx) {
           return FloatingActionButton(
             child: const Icon(Icons.add),
-            onPressed: () async {
-              await Get.toNamed('/add-story');
-              dx.getStories();
+            onPressed: () {
+              context.go('/add-story');
             },
           );
         },

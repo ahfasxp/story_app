@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/data/remote/response/login_result.dart';
 import 'package:story_app/presentation/controller/login_controller.dart';
 
@@ -12,6 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final LoginController _loginController = Get.put(LoginController());
   final GetStorage _getStorage = GetStorage();
 
   final TextEditingController _emailController = TextEditingController();
@@ -58,13 +60,14 @@ class _LoginPageState extends State<LoginPage> {
                       if (dx.hasData.value) {
                         LoginResult loginResult = dx.loginResult.value;
                         _getStorage.write('token', loginResult.token);
-                        Get.offNamed('/');
+                        // ignore: use_build_context_synchronously
+                        context.go('/');
                       } else {
                         String errorMessage = dx.errorMessage.value;
-                        Get.snackbar(
-                          'Terjadi Kesalahan',
-                          errorMessage,
-                        );
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(errorMessage),
+                        ));
                       }
                     },
                     child: const Text('Login'),
@@ -72,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 10.0),
                   TextButton(
                     onPressed: () {
-                      Get.toNamed('/register');
+                      context.go('/login/register');
                     },
                     child: const Text('Don\'t have an account? Register here'),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:story_app/presentation/controller/register_controller.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final RegisterController _registerController = Get.put(RegisterController());
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -61,14 +63,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       String password = _passwordController.text;
                       await dx.register(name, email, password);
                       if (dx.hasData.value) {
-                        Get.snackbar('Register Successfully', '');
-                        Get.back();
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Register Successfully'),
+                        ));
+                        // ignore: use_build_context_synchronously
+                        context.go('/login');
                       } else {
                         String errorMessage = dx.errorMessage.value;
-                        Get.snackbar(
-                          'Terjadi Kesalahan',
-                          errorMessage,
-                        );
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(errorMessage),
+                        ));
                       }
                     },
                     child: const Text('Register'),

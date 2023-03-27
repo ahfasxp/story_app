@@ -19,6 +19,7 @@ class RegisterController extends GetxController {
     } catch (e) {
       errorMessage.value = e.toString();
       isError.value = true;
+      hasData.value = false;
       update();
     } finally {
       isLoading.value = false;

@@ -44,15 +44,12 @@ class RemoteDataSource {
       },
     );
 
-    switch (response.statusCode) {
-      case 200:
-        return LoginResponse.fromJson(jsonDecode(response.body)).loginResult!;
-      case 400:
-      case 404:
-      case 500:
-        return Future.error(jsonDecode(response.body)['message']);
-      default:
-        return Future.error('Tidak ada koneksi internet');
+    if (response.statusCode <= 300) {
+      return LoginResponse.fromJson(jsonDecode(response.body)).loginResult!;
+    } else if (response.statusCode <= 500) {
+      return Future.error(jsonDecode(response.body)['message']);
+    } else {
+      return Future.error('Tidak ada koneksi internet');
     }
   }
 
