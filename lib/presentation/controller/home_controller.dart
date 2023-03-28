@@ -14,13 +14,30 @@ class HomeController extends GetxController {
   var errorMessage = ''.obs;
   var stories = <StoryResult>[].obs;
 
+  int? pageItems = 1;
+  int sizeItems = 10;
+
   Future<void> getStories() async {
     try {
-      isLoading.value = true;
-      update();
-      final result = await _remoteDataSource.getStories();
-      stories.value = result;
+      if (pageItems == 1) {
+        isLoading.value = true;
+        update();
+      }
+
+      final result = await _remoteDataSource.getStories(
+        pageItems!.toString(),
+        sizeItems.toString(),
+      );
+
+      stories.addAll(result);
       hasData.value = true;
+
+      if (stories.length < sizeItems) {
+        pageItems = null;
+      } else {
+        pageItems = pageItems! + 1;
+      }
+
       update();
     } catch (e) {
       errorMessage.value = e.toString();

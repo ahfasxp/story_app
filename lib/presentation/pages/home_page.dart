@@ -12,10 +12,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final HomeController _homeController = Get.put(HomeController());
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+
+    /// todo-02-03:set the listener to listen the scroll behaviour
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        /// todo-02-04: run the getQuotes method to call the API request
+        /// todo-04-02: run the getQuotes mehtod when pageItems is not null
+        if (_homeController.pageItems != null) {
+          _homeController.getStories();
+        }
+      }
+    });
+
     _homeController.getStories();
   }
 
@@ -23,6 +37,12 @@ class _HomePageState extends State<HomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _homeController.getStories();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,9 +75,20 @@ class _HomePageState extends State<HomePage> {
               child: Text(dx.errorMessage.value),
             );
           } else if (dx.hasData.value) {
+            final stories = dx.stories;
             return ListView.builder(
-              itemCount: dx.stories.length,
+              controller: scrollController,
+              itemCount: stories.length + (dx.pageItems != null ? 1 : 0),
               itemBuilder: (context, index) {
+                if (index == stories.length && dx.pageItems != null) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+
                 return GestureDetector(
                   onTap: () {
                     context.go('/detail-story', extra: dx.stories[index]);
@@ -71,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: NetworkImage(
-                                dx.stories[index].photoUrl ?? '',
+                                stories[index].photoUrl ?? '',
                               ),
                               fit: BoxFit.cover,
                             ),
@@ -79,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         ListTile(
                           title: Text(
-                            dx.stories[index].name ?? '',
+                            stories[index].name ?? '',
                           ),
                         ),
                       ],

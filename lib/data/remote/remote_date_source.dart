@@ -98,10 +98,10 @@ class RemoteDataSource {
     }
   }
 
-  Future<List<StoryResult>> getStories() async {
+  Future<List<StoryResult>> getStories(String page, String size) async {
     final token = _getStorage.read('token');
     final response = await client.get(
-      Uri.parse('$baseUrl/stories'),
+      Uri.parse('$baseUrl/stories?page=$page&size=$size'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
