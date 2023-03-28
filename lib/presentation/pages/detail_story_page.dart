@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:story_app/data/remote/response/story_result.dart';
 
@@ -26,19 +27,38 @@ class _DetailStoryPageState extends State<DetailStoryPage> {
         (widget.storyResult.lat != null && widget.storyResult.lon != null);
 
     if (hasLatlon) {
-      targetPosition = LatLng(widget.storyResult.lat!, widget.storyResult.lon!);
-
-      final marker = Marker(
-        markerId: const MarkerId("dicoding"),
-        position: targetPosition,
-        onTap: () {
-          mapController.animateCamera(
-            CameraUpdate.newLatLngZoom(targetPosition, 18),
-          );
-        },
-      );
-      markers.add(marker);
+      setupMarker();
     }
+  }
+
+  setupMarker() async {
+    targetPosition = LatLng(widget.storyResult.lat!, widget.storyResult.lon!);
+
+    /// todo-04-03: run the reverse geocoding
+    final info = await geo.placemarkFromCoordinates(
+        targetPosition.latitude, targetPosition.longitude);
+
+    /// todo-04-04: define a name and address of location
+    final place = info[0];
+
+    final marker = Marker(
+      markerId: const MarkerId("dicoding"),
+      position: targetPosition,
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return SizedBox(
+              height: 100,
+              child: Center(
+                child: Text('${place.name}, ${place.locality}'),
+              ),
+            );
+          },
+        );
+      },
+    );
+    markers.add(marker);
   }
 
   @override

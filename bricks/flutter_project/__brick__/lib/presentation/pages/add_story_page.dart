@@ -180,7 +180,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
                             content: Text('Add Story Successfully'),
                           ));
                           // ignore: use_build_context_synchronously
-                          context.go('/');
+                          context.pop();
                         } else {
                           String errorMessage = dx.errorMessage.value;
                           // ignore: use_build_context_synchronously

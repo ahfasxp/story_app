@@ -36,6 +36,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _homeController.pageItems = 1;
+    _homeController.stories.clear();
+    _homeController.update();
+
     _homeController.getStories();
   }
 

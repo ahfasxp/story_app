@@ -67,11 +67,17 @@ class RemoteDataSource {
     request.headers.addAll({
       'Authorization': 'Bearer $token',
     });
-    request.fields.addAll({
-      'description': description,
-      'lat': lat.toString(),
-      'lon': lon.toString(),
-    });
+    if (lat != null && lon != null) {
+      request.fields.addAll({
+        'description': description,
+        'lat': lat.toString(),
+        'lon': lon.toString(),
+      });
+    } else {
+      request.fields.addAll({
+        'description': description,
+      });
+    }
     request.files.add(
       http.MultipartFile(
         'photo',

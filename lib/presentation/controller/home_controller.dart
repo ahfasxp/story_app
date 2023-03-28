@@ -29,13 +29,17 @@ class HomeController extends GetxController {
         sizeItems.toString(),
       );
 
-      stories.addAll(result);
-      hasData.value = true;
+      if (result.isNotEmpty) {
+        stories.addAll(result);
+        hasData.value = true;
 
-      if (stories.length < sizeItems) {
-        pageItems = null;
+        if (stories.length < sizeItems) {
+          pageItems = null;
+        } else {
+          pageItems = pageItems! + 1;
+        }
       } else {
-        pageItems = pageItems! + 1;
+        pageItems = null;
       }
 
       update();
