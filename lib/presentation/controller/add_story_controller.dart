@@ -15,6 +15,8 @@ class AddStoryController extends GetxController {
   Future<void> addStory(
     String description,
     File photo,
+    double? lat,
+    double? lon,
   ) async {
     try {
       isLoading.value = true;
@@ -23,6 +25,8 @@ class AddStoryController extends GetxController {
       await _remoteDataSource.addNewStory(
         description,
         compressPhoto!,
+        lat,
+        lon,
       );
       hasData.value = true;
       update();

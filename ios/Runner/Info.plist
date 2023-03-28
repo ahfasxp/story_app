@@ -53,5 +53,16 @@
 	<string>Allow $(PRODUCT_NAME) to access your microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your photo library</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>The app needs user's location permission</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>The app needs user's location permission</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>The app needs location service permission</string>
+    
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>location</string>
+    </array>
 </dict>
 </plist>

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:story_app/data/remote/response/story_result.dart';
 import 'package:story_app/presentation/pages/add_story_page.dart';
 import 'package:story_app/presentation/pages/detail_story_page.dart';
 import 'package:story_app/presentation/pages/home_page.dart';
 import 'package:story_app/presentation/pages/login_page.dart';
+import 'package:story_app/presentation/pages/picker_map_page.dart';
 import 'package:story_app/presentation/pages/register_page.dart';
 
 Future<void> main() async {
@@ -32,7 +34,15 @@ class MyApp extends StatelessWidget {
           GoRoute(
             path: 'add-story',
             builder: (BuildContext context, GoRouterState state) {
-              return const AddStoryPage();
+              return AddStoryPage(
+                latLng: (state.extra != null) ? state.extra as LatLng : null,
+              );
+            },
+          ),
+          GoRoute(
+            path: 'picker-map',
+            builder: (BuildContext context, GoRouterState state) {
+              return const PickerMapPage();
             },
           ),
         ],

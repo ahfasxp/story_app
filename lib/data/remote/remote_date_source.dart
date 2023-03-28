@@ -56,6 +56,8 @@ class RemoteDataSource {
   Future<BaseResponse> addNewStory(
     String description,
     File photo,
+    double? lat,
+    double? lon,
   ) async {
     final token = _getStorage.read('token');
     final request = http.MultipartRequest(
@@ -67,6 +69,8 @@ class RemoteDataSource {
     });
     request.fields.addAll({
       'description': description,
+      'lat': lat.toString(),
+      'lon': lon.toString(),
     });
     request.files.add(
       http.MultipartFile(
@@ -77,15 +81,19 @@ class RemoteDataSource {
       ),
     );
 
-    final response = await request.send();
+    try {
+      final response = await request.send();
 
-    if (response.statusCode <= 300) {
-      final responseString = await response.stream.bytesToString();
-      return BaseResponse.fromJson(jsonDecode(responseString));
-    } else if (response.statusCode <= 500) {
-      final errorString = await response.stream.bytesToString();
-      return Future.error(jsonDecode(errorString)['message']);
-    } else {
+      if (response.statusCode <= 300) {
+        final responseString = await response.stream.bytesToString();
+        return BaseResponse.fromJson(jsonDecode(responseString));
+      } else if (response.statusCode <= 500) {
+        final errorString = await response.stream.bytesToString();
+        return Future.error(jsonDecode(errorString)['message']);
+      } else {
+        return Future.error('Terjadi kesalahan pada server');
+      }
+    } catch (e) {
       return Future.error('Tidak ada koneksi internet');
     }
   }
