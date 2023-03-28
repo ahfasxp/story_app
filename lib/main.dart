@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Story_App',
+      title: 'Story App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
