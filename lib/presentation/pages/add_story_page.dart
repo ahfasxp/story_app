@@ -3,13 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:story_app/presentation/controller/add_story_controller.dart';
 
 class AddStoryPage extends StatefulWidget {
-  final LatLng? latLng;
-  const AddStoryPage({super.key, this.latLng});
+  const AddStoryPage({super.key});
 
   @override
   State<AddStoryPage> createState() => _AddStoryPageState();
@@ -36,10 +34,18 @@ class _AddStoryPageState extends State<AddStoryPage> {
   @override
   void initState() {
     super.initState();
-    debugPrint(widget.latLng.toString());
-    if (widget.latLng != null) {
-      _latController.text = widget.latLng!.latitude.toString();
-      _lonController.text = widget.latLng!.longitude.toString();
+    _addStoryController.latitude.value = 0.0;
+    _addStoryController.longitude.value = 0.0;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    double latitude = _addStoryController.latitude.value;
+    double longitude = _addStoryController.longitude.value;
+    if (latitude != 0.0 && longitude != 0.0) {
+      _latController.text = _addStoryController.latitude.toString();
+      _lonController.text = _addStoryController.longitude.toString();
     }
   }
 
@@ -141,7 +147,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
                   TextButton(
                     child: const Text('Gunakan Peta'),
                     onPressed: () {
-                      context.go('/picker-map');
+                      context.go('/add-story/picker-map');
                     },
                   ),
                   const SizedBox(height: 16.0),

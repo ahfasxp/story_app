@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:story_app/presentation/controller/add_story_controller.dart';
 
 class PickerMapPage extends StatefulWidget {
   const PickerMapPage({super.key});
@@ -121,6 +123,7 @@ class _PickerMapPageState extends State<PickerMapPage> {
 
     setState(() {
       placemark = place;
+      targetPosition = latLng;
     });
 
     /// todo-03-02: set a marker based on new lat-long
@@ -182,7 +185,9 @@ class _PickerMapPageState extends State<PickerMapPage> {
 
 /// todo-05-01: create a location's place widget
 class PlacemarkWidget extends StatelessWidget {
-  const PlacemarkWidget({
+  final AddStoryController _addStoryController = Get.find();
+
+  PlacemarkWidget({
     super.key,
     required this.placemark,
     required this.latLng,
@@ -231,7 +236,10 @@ class PlacemarkWidget extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              context.go('/add-story', extra: latLng);
+              double lat = latLng.latitude;
+              double long = latLng.longitude;
+              _addStoryController.setLatLong(lat, long);
+              context.pop();
             },
             child: const SizedBox(
               width: double.infinity,

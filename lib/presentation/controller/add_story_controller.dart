@@ -12,6 +12,15 @@ class AddStoryController extends GetxController {
   var isError = false.obs;
   var errorMessage = ''.obs;
 
+  var latitude = 0.0.obs;
+  var longitude = 0.0.obs;
+
+  setLatLong(double lat, double long) {
+    latitude.value = lat;
+    longitude.value = long;
+    update();
+  }
+
   Future<void> addStory(
     String description,
     File photo,
