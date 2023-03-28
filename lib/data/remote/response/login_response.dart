@@ -1,7 +1,10 @@
-
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:story_app/data/remote/response/login_result.dart';
 
+part 'login_response.g.dart';
+
+@JsonSerializable()
 class LoginResponse extends Equatable {
   final bool? error;
   final String? message;
@@ -9,16 +12,11 @@ class LoginResponse extends Equatable {
 
   const LoginResponse({this.error, this.message, this.loginResult});
 
+  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
+      _$LoginResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
+
   @override
   List<Object?> get props => [error, message, loginResult];
-
-  factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    return LoginResponse(
-      error: json['error'],
-      message: json['message'],
-      loginResult: json['loginResult'] != null
-          ? LoginResult.fromJson(json['loginResult'])
-          : null,
-    );
-  }
 }

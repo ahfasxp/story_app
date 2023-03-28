@@ -1,5 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'story_result.g.dart'; // nama file ini harus sesuai dengan nama kelasnya
+
+@JsonSerializable()
 class StoryResult extends Equatable {
   final String? id;
   final String? name;
@@ -19,18 +23,10 @@ class StoryResult extends Equatable {
     this.lon,
   });
 
-  factory StoryResult.fromJson(Map<String, dynamic> json) {
-    return StoryResult(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      photoUrl: json['photoUrl'],
-      createdAt:
-          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-      lat: json['lat'] != null ? double.parse(json['lat'].toString()) : null,
-      lon: json['lon'] != null ? double.parse(json['lon'].toString()) : null,
-    );
-  }
+  factory StoryResult.fromJson(Map<String, dynamic> json) =>
+      _$StoryResultFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StoryResultToJson(this);
 
   @override
   List<Object?> get props =>
